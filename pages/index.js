@@ -1,7 +1,18 @@
 import React from 'react'
 import Router from 'next/router'
-import styled from 'styled-components';
+import styled from 'styled-components'
+import { injectGlobal } from 'styled-components'
+
 import Header from '../components/Header'
+import SearchBar from '../components/SearchBar'
+import ResultList from '../components/ResultList'
+
+injectGlobal`
+  body {
+    margin: 0;
+    font-family: 'Roboto'
+  }
+`
 
 const Container = styled.div`
   width: 100%;
@@ -12,7 +23,7 @@ const Container = styled.div`
   align-items: stretch;
 `
 
-export default class extends React.Component {
+export default class App extends React.Component {
   static async getInitialProps({ req }) {
     return { foo: 'foo' }
   }
@@ -21,7 +32,8 @@ export default class extends React.Component {
     return (
       <Container>
         <Header />
-        Click <span onClick={() => Router.push('/profile')}>here</span> to read more { this.props.foo }
+        <SearchBar />
+        <ResultList />
       </Container>
     )
   }
