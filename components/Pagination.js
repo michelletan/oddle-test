@@ -12,6 +12,7 @@ const Container = styled.div`
 `
 const Button = styled.button`
   margin: 5px;
+  padding: 5px;
 `
 
 export class Pagination extends React.Component {

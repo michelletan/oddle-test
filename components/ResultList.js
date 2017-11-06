@@ -1,5 +1,6 @@
 import React, { Component } from 'react'
 import styled from 'styled-components'
+import Loading from './Loading'
 import ResultCard from './ResultCard'
 
 const Container = styled.div`
@@ -18,6 +19,7 @@ export class ResultList extends React.Component {
   render() {
     return (
       <Container>
+        <Loading />
         <ResultCard />
         <ResultCard />
         <ResultCard />
