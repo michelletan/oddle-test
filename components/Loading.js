@@ -1,6 +1,7 @@
 import React, { Component } from 'react'
 import styled, { keyframes } from 'styled-components'
 
+// Animation from https://codepen.io/alanshortis/pen/eJLVXr
 const spin = keyframes`
   0% {
     transform: rotate(0deg);
