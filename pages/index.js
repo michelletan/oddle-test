@@ -5,6 +5,7 @@ import { injectGlobal } from 'styled-components'
 
 import Header from '../components/Header'
 import SearchBar from '../components/SearchBar'
+import Pagination from '../components/Pagination'
 import ResultList from '../components/ResultList'
 
 injectGlobal`
@@ -33,6 +34,7 @@ export default class App extends React.Component {
       <Container>
         <Header />
         <SearchBar />
+        <Pagination />
         <ResultList />
       </Container>
     )
