@@ -29,6 +29,17 @@ function users(state = {}, action) {
         ...state,
         action.userId: newUser
       }
+    default:
+      return state
+  }
+}
+
+function selectedQuery(state = '', action) {
+  switch (action.type) {
+    case SEARCH_USER:
+      return action.query.slice(0)
+    default:
+      return state
   }
 }
 
@@ -39,5 +50,15 @@ function usersByQueries(state = {}, action) {
         ...state,
         action.query: action.results
       }
+    default:
+      return state
   }
 }
+
+const rootReducer = combineReducers({
+  users,
+  selectedQuery,
+  usersByQueries
+})
+
+export default rootReducer
