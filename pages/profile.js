@@ -7,7 +7,6 @@ import { injectGlobal } from 'styled-components'
 import Header from '../components/Header'
 import SearchBar from '../components/SearchBar'
 
-
 injectGlobal`
   body {
     margin: 0;
