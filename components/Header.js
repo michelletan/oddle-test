@@ -1,5 +1,6 @@
 import React, { Component } from 'react'
 import styled from 'styled-components'
+import Link from 'next/link'
 
 const StyledHeader = styled.section`
   height: 0%;
@@ -19,8 +20,9 @@ export class Header extends React.Component {
   render() {
     return (
       <StyledHeader>
-        <Title>GitHub User Search</Title>
-
+        <Link href="/">
+          <Title>GitHub User Search</Title>
+        </Link>
       </StyledHeader>
     )
   }
