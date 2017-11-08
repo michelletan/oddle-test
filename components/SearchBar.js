@@ -19,10 +19,27 @@ const Button = styled.button`
 `
 
 export class SearchBar extends React.Component {
+  constructor(props) {
+    super(props)
+    this.state = {
+      text: ''
+    }
+    this.onTextChange = this.onTextChange.bind(this)
+    this.onButtonClick = this.onButtonClick.bind(this)
+  }
+
+  onTextChange(event) {
+    this.setState({ text: event.target.value })
+  }
+
+  onButtonClick() {
+    this.props.onSearchRequest(this.state.text)
+  }
+
   render() {
     return (
       <Container>
-        <Input type="text" placeholder="Search for a user on GitHub..."/><Button>Search</Button>
+        <Input value={this.state.text} onChange={this.onTextChange} type="text" placeholder="Search for a user on GitHub..."/><Button onClick={this.onButtonClick}>Search</Button>
       </Container>
     )
   }
