@@ -31,7 +31,7 @@ export class ResultCard extends React.Component {
   render() {
     const { login, id, avatarUrl, subscriptions=0, followers=0 } = this.props.user
     return (
-      <Link href={{ pathname: '/profile', query: { id: id } }}>
+      <Link href={{ pathname: '/profile', query: { username: login } }}>
         <Card>
           <Image src={ avatarUrl } />
           <Content>
