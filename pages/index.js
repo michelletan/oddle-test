@@ -15,6 +15,8 @@ import SearchBar from '../components/SearchBar'
 import Pagination from '../components/Pagination'
 import ResultList from '../components/ResultList'
 
+const maxResultsPerPage = 30
+
 injectGlobal`
   body {
     margin: 0;
@@ -45,7 +47,10 @@ export class App extends React.Component {
       <Container>
         <Header />
         <SearchBar onSearchRequest={this.props.onSearchRequest}/>
-        <Pagination resultRange={this.props.resultRange}/>
+        <Pagination
+          onNextPageRequest={this.props.onNextPageRequest}
+          resultRange={this.props.resultRange}
+        />
         <ResultList users={this.props.users}/>
       </Container>
     )
@@ -54,14 +59,15 @@ export class App extends React.Component {
 
 const mapStateToProps = (state) => {
   let users = []
-  let resultRange = { total: 0, start: 0, end: 0 }
+  let resultRange = { total: 0, current: 0, maxResultsPerPage: maxResultsPerPage }
+  console.log(state)
 
   if (state.usersByQueries[state.selectedQuery]) {
     const results = state.usersByQueries[state.selectedQuery]
     users = results.items
     resultRange.total = results.totalCount
-    resultRange.start = 1
-    resultRange.end = 30
+    resultRange.current = state.selectedPage
+    resultRange.maxResultsPerPage = maxResultsPerPage
   }
   return {
     users: users,
@@ -73,6 +79,9 @@ const mapDispatchToProps = (dispatch) => {
   return {
     onSearchRequest: query => {
       dispatch(fetchSearchResults(query))
+    },
+    onNextPageRequest: page => {
+      dispatch(fetchSearchResults(query, page + 1))
     }
   }
 }

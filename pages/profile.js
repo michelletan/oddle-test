@@ -32,24 +32,29 @@ const Container = styled.div`
 
 const Content = styled.div`
   display: flex;
-  flex-direction: column;
+  flex-direction: row;
   margin-top: 20px;
   padding-left: 20px;
+`
+
+const ProfileBlock = styled.div`
+  width: 300px;
 `
 
 const Block = styled.div`
   flex: 1;
   display: flex;
+  flex-direction: column;
   margin-bottom: 10px;
 `
 
 const Title = styled.h2`
-
+  margin-bottom: 10px;
 `
 
 const Image = styled.img`
-  width: 50px;
-  height: 50px;
+  width: 100px;
+  height: 100px;
   margin-right: 10px;
 `
 
@@ -59,44 +64,50 @@ const makeStore = (initialState, options) => {
 
 export class Profile extends React.Component {
   static async getInitialProps({ store, isServer, pathname, query }) {
-    console.log(query)
     store.dispatch(fetchUser(query.username))
-    return { username: 'foo' }
+    return { }
   }
 
   render() {
+    console.log(this.props.user)
     const loading = 'Loading...'
     const defaultImg = 'http://i0.kym-cdn.com/photos/images/original/001/250/216/305.jpg'
-    const placeholder = { name: loading, login: loading, avatarUrl: defaultImg }
-    const { name, login, avatarUrl } = this.props.user || placeholder
+    const placeholder = {
+      name: loading,
+      login: loading,
+      location: loading,
+      avatarUrl: defaultImg,
+      htmlUrl: 'https://github.com',
+      publicRepos: 0,
+      following: 0,
+      followers: 0
+    }
+    const user = this.props.user || placeholder
 
     return (
       <Container>
         <Header />
+        { this.props.selectedQuery && this.props.selectedQuery != '' &&
+          <Block>
+            <Link href="/">
+              <a>Back to Results for { this.props.selectedQuery }</a>
+            </Link>
+          </Block>
+        }
         <Content>
-          { this.props.selectedQuery && this.props.selectedQuery != '' &&
-            <Block>
-              <Link href="/">
-                <a>Back to Results for { this.props.selectedQuery }</a>
-              </Link>
-            </Block>
-          }
-
+          <ProfileBlock>
+            <Image src={ user.avatarUrl }/>
+            <Title>{ user.name }</Title>
+            <p>{ '@' + user.login }</p>
+            { user.location && <p>{ user.location }</p> }
+            <Link href={ user.htmlUrl }>
+              <a>{ user.htmlUrl }</a>
+            </Link>
+          </ProfileBlock>
           <Block>
-            <Image src={ avatarUrl }/>
-            <Title>{ name }</Title>
-            <div>{ '@' + login }</div>
-          </Block>
-          <Block>
-            <Title>Repositories</Title>
-          </Block>
-          <Block>
-            <Block>
-              <Title>Following</Title>
-            </Block>
-            <Block>
-              <Title>Followed</Title>
-            </Block>
+            <Title>Repositories ({ user.publicRepos })</Title>
+            <Title>Following ({ user.following })</Title>
+            <Title>Followers ({ user.followers })</Title>
           </Block>
         </Content>
 

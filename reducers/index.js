@@ -10,10 +10,37 @@ import {
 } from '../actions'
 import { combineReducers } from 'redux'
 
+function selectedQuery(state = '', action) {
+  switch (action.type) {
+    case REQUEST_SEARCH_RESULTS:
+      return action.query.slice(0)
+    default:
+      return state
+  }
+}
+
+function selectedPage(state = 0, action) {
+  switch (action.type) {
+    case REQUEST_SEARCH_RESULTS:
+    case RECEIVE_SEARCH_RESULTS:
+      return action.page
+    default:
+      return state
+  }
+}
+
+function selectedUser(state = '', action) {
+  switch (action.type) {
+    case REQUEST_USER:
+      return action.username.slice(0)
+    default:
+      return state
+  }
+}
+
 function users(state = {}, action) {
   switch (action.type) {
     case RECEIVE_USER:
-    console.log(action)
       const newUser = {...state[action.username], ...action.user}
       return {
         ...state,
@@ -36,27 +63,14 @@ function users(state = {}, action) {
   }
 }
 
-function selectedUser(state = '', action) {
-  switch (action.type) {
-    case REQUEST_USER:
-      return action.username.slice(0)
-    default:
-      return state
-  }
-}
-
-function selectedQuery(state = '', action) {
-  switch (action.type) {
-    case REQUEST_SEARCH_RESULTS:
-      return action.query.slice(0)
-    default:
-      return state
-  }
-}
-
 function usersByQueries(state = {}, action) {
   switch (action.type) {
     case RECEIVE_SEARCH_RESULTS:
+    console.log(action)
+      // const results = action.results.items
+      // const userIds = results.map((user) => {
+      //
+      // })
       return {
         ...state,
         [action.query]: action.results
@@ -67,9 +81,10 @@ function usersByQueries(state = {}, action) {
 }
 
 const rootReducer = combineReducers({
-  users,
-  selectedUser,
   selectedQuery,
+  selectedPage,
+  selectedUser,
+  users,
   usersByQueries
 })
 

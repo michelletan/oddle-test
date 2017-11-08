@@ -29,7 +29,7 @@ const Title = styled.div`
 
 export class ResultCard extends React.Component {
   render() {
-    const { login, id, avatarUrl, subscriptions=0, followers=0 } = this.props.user
+    const { login, id, avatarUrl, subscriptions='-', followers='-' } = this.props.user
     return (
       <Link href={{ pathname: '/profile', query: { username: login } }}>
         <Card>

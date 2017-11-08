@@ -17,10 +17,13 @@ export const RECEIVE_USER_FOLLOWERS = 'RECEIVE_USER_FOLLOWERS'
 export const RECEIVE_USER_SUBSCRIPTIONS = 'RECEIVE_USER_SUBSCRIPTIONS'
 
 // {
+//   selectedQuery: '',
+//   selectedPage: 1,
+//   selectedUser: 'username',
 //   users: {
-//     id: {
+//     username: {
 //       id: id,
-//       name: ...,
+//       login: ...,
 //       followers: 0,
 //       subscriptions: 0
 //     }
@@ -28,7 +31,10 @@ export const RECEIVE_USER_SUBSCRIPTIONS = 'RECEIVE_USER_SUBSCRIPTIONS'
 //   queries: {
 //     'abc': {
 //       isFetching: true,
-//       items: [id, id, id]
+//       pages: {
+//         1: [username, username, username],
+//         2: [username, username, username],
+//       }
 //     }
 //   }
 // }
@@ -61,10 +67,11 @@ export function getUserSubscriptions(userId) {
   }
 }
 
-export function requestSearchResults(query) {
+export function requestSearchResults(query, page) {
   return {
     type: REQUEST_SEARCH_RESULTS,
-    query: query
+    query: query,
+    page: page
   }
 }
 
@@ -89,17 +96,17 @@ export function requestUserSubscriptions(userId) {
   }
 }
 
-export function receiveSearchResults(query, json) {
+export function receiveSearchResults(query, page, json) {
   return {
     type: RECEIVE_SEARCH_RESULTS,
     query: query,
+    page: page,
     results: camelize(json),
     receivedAt: Date.now()
   }
 }
 
 export function receiveUser(username, json) {
-  console.log(json)
   return {
     type: RECEIVE_USER,
     username: username,
@@ -123,12 +130,12 @@ export function receiveUserSubscriptions(url, json) {
   }
 }
 
-export function fetchSearchResults(query) {
+export function fetchSearchResults(query, page=1) {
   return (dispatch) => {
-    dispatch(requestSearchResults(query))
-    return fetch(`https://api.github.com/search/users?q=${query}`)
+    dispatch(requestSearchResults(query, page))
+    return fetch(`https://api.github.com/search/users?q=${query}&page=${page}`)
       .then(response => response.json())
-      .then(json => dispatch(receiveSearchResults(query, json)))
+      .then(json => dispatch(receiveSearchResults(query, page, json)))
   }
 }
 

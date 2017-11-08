@@ -17,9 +17,14 @@ const Button = styled.button`
 
 export class Pagination extends React.Component {
   render() {
+    const { total, current, maxResultsPerPage } = this.props.resultRange
+    const min = (current - 1) * maxResultsPerPage + 1
+    const max = current * maxResultsPerPage
+    const start = min > 0 ? min : 0
+    const end = max > total ? total : max
     return (
       <Container>
-        <Button>Prev</Button> 1-10 of 23 results<Button>Next</Button>
+        <Button>Prev</Button> { start } - { end } of { total } results<Button>Next</Button>
       </Container>
     )
   }

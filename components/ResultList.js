@@ -17,7 +17,6 @@ const Input = styled.input`
 
 export class ResultList extends React.Component {
   render() {
-    console.log(this.props.users)
     const cards = this.props.users.map((user) => {
       return (
         <ResultCard key={user.id} user={user}/>
