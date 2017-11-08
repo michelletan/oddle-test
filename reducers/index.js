@@ -1,12 +1,12 @@
 import {
-  SEARCH_USER,
-  GET_USER,
-  GET_USER_FOLLOWERS,
-  GET_USER_SUBSCRIPTIONS,
+  REQUEST_SEARCH_RESULTS,
+  REQUEST_USER,
+  REQUEST_USER_FOLLOWERS,
+  REQUEST_USER_SUBSCRIPTIONS,
   RECEIVE_SEARCH_RESULTS,
   RECEIVE_USER,
   RECEIVE_USER_FOLLOWERS,
-  RECEIVE_USER_SUBSCRIPTIONS
+  RECEIVE_USER_SUBSCRIPTIONS,
 } from '../actions'
 import { combineReducers } from 'redux'
 
@@ -47,11 +47,9 @@ function selectedQuery(state = 'HEY', action) {
 function usersByQueries(state = {}, action) {
   switch (action.type) {
     case RECEIVE_SEARCH_RESULTS:
-      const newState = {...state}
-
       return {
         ...state,
-        action.query: action.results
+        [action.query]: action.results
       }
     default:
       return state
