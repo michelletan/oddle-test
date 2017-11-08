@@ -35,9 +35,9 @@ function users(state = {}, action) {
   }
 }
 
-function selectedQuery(state = '', action) {
+function selectedQuery(state = 'HEY', action) {
   switch (action.type) {
-    case SEARCH_USER:
+    case REQUEST_SEARCH_RESULTS:
       return action.query.slice(0)
     default:
       return state
@@ -47,9 +47,11 @@ function selectedQuery(state = '', action) {
 function usersByQueries(state = {}, action) {
   switch (action.type) {
     case RECEIVE_SEARCH_RESULTS:
+      const newState = {...state}
+
       return {
         ...state,
-        [action.query]: action.results
+        action.query: action.results
       }
     default:
       return state
