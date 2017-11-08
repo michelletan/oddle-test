@@ -1,4 +1,5 @@
 import fetch from 'isomorphic-fetch'
+import camelize from 'camelize'
 
 export const SEARCH_USER = 'SEARCH_USER'
 export const GET_USER = 'GET_USER'
@@ -92,7 +93,7 @@ export function receiveSearchResults(query, json) {
   return {
     type: RECEIVE_SEARCH_RESULTS,
     query: query,
-    results: json,
+    results: camelize(json),
     receivedAt: Date.now()
   }
 }

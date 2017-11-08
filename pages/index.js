@@ -58,8 +58,9 @@ const mapStateToProps = (state) => {
 
   if (state.usersByQueries[state.selectedQuery]) {
     const results = state.usersByQueries[state.selectedQuery]
-    users = results['items']
-    resultRange.total = results['total_count']
+    console.log(results)
+    users = results.items
+    resultRange.total = results.totalCount
     resultRange.start = 1
     resultRange.end = 30
   }
