@@ -24,8 +24,15 @@ export class SearchBar extends React.Component {
     this.state = {
       text: ''
     }
+    this.onKeyPress = this.onKeyPress.bind(this)
     this.onTextChange = this.onTextChange.bind(this)
     this.onButtonClick = this.onButtonClick.bind(this)
+  }
+
+  onKeyPress(event) {
+    if (event.key === 'Enter') {
+      this.onButtonClick()
+    }
   }
 
   onTextChange(event) {
@@ -39,7 +46,7 @@ export class SearchBar extends React.Component {
   render() {
     return (
       <Container>
-        <Input value={this.state.text} onChange={this.onTextChange} type="text" placeholder="Search for a user on GitHub..."/><Button onClick={this.onButtonClick}>Search</Button>
+        <Input value={this.state.text} onChange={this.onTextChange} onKeyPress={this.onKeyPress} type="text" placeholder="Search for a user on GitHub..."/><Button onClick={this.onButtonClick}>Search</Button>
       </Container>
     )
   }
