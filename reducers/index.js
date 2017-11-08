@@ -13,10 +13,11 @@ import { combineReducers } from 'redux'
 function users(state = {}, action) {
   switch (action.type) {
     case RECEIVE_USER:
-      const newUser = {...state[action.userId], ...action.user}
+    console.log(action)
+      const newUser = {...state[action.username], ...action.user}
       return {
         ...state,
-        [action.userId]: newUser
+        [action.username]: newUser
       }
     case RECEIVE_USER_FOLLOWERS:
       const newUserF = {...state[action.userId], followers: action.followers}
@@ -35,7 +36,16 @@ function users(state = {}, action) {
   }
 }
 
-function selectedQuery(state = 'HEY', action) {
+function selectedUser(state = '', action) {
+  switch (action.type) {
+    case REQUEST_USER:
+      return action.username.slice(0)
+    default:
+      return state
+  }
+}
+
+function selectedQuery(state = '', action) {
   switch (action.type) {
     case REQUEST_SEARCH_RESULTS:
       return action.query.slice(0)
@@ -58,6 +68,7 @@ function usersByQueries(state = {}, action) {
 
 const rootReducer = combineReducers({
   users,
+  selectedUser,
   selectedQuery,
   usersByQueries
 })

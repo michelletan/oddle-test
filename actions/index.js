@@ -68,10 +68,10 @@ export function requestSearchResults(query) {
   }
 }
 
-export function requestUser(userId) {
+export function requestUser(username) {
   return {
     type: REQUEST_USER,
-    userId: userId
+    username: username
   }
 }
 
@@ -98,11 +98,12 @@ export function receiveSearchResults(query, json) {
   }
 }
 
-export function receiveUser(userId, json) {
+export function receiveUser(username, json) {
+  console.log(json)
   return {
     type: RECEIVE_USER,
-    userId: userId,
-    user: json.data
+    username: username,
+    user: camelize(json)
   }
 }
 
@@ -110,7 +111,7 @@ export function receiveUserFollowers(url, json) {
   return {
     type: RECEIVE_USER_FOLLOWERS,
     url: url,
-    followers: json.data
+    followers: camelize(json)
   }
 }
 
@@ -118,7 +119,7 @@ export function receiveUserSubscriptions(url, json) {
   return {
     type: RECEIVE_USER_SUBSCRIPTIONS,
     url: url,
-    subscriptions: json.data
+    subscriptions: camelize(json)
   }
 }
 
@@ -128,5 +129,14 @@ export function fetchSearchResults(query) {
     return fetch(`https://api.github.com/search/users?q=${query}`)
       .then(response => response.json())
       .then(json => dispatch(receiveSearchResults(query, json)))
+  }
+}
+
+export function fetchUser(username) {
+  return (dispatch) => {
+    dispatch(requestUser(username))
+    return fetch(`https://api.github.com/users/${username}`)
+      .then(response => response.json())
+      .then(json => dispatch(receiveUser(username, json)))
   }
 }
