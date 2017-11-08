@@ -4,6 +4,13 @@ import Link from 'next/link'
 import styled from 'styled-components'
 import { injectGlobal } from 'styled-components'
 
+import thunkMiddleware from 'redux-thunk'
+import { createStore, applyMiddleware, compose } from 'redux'
+import withRedux from 'next-redux-wrapper'
+import rootReducer from '../reducers'
+
+import { fetchUser } from '../actions'
+
 import Header from '../components/Header'
 import SearchBar from '../components/SearchBar'
 
@@ -46,21 +53,39 @@ const Image = styled.img`
   margin-right: 10px;
 `
 
-export default class Profile extends React.Component {
-  static async getInitialProps({ req }) {
-    return { foo: 'foo' }
+const makeStore = (initialState, options) => {
+  return createStore(rootReducer, initialState, compose(applyMiddleware(thunkMiddleware)))
+}
+
+export class Profile extends React.Component {
+  static async getInitialProps({ store, isServer, pathname, query }) {
+    console.log(query)
+    store.dispatch(fetchUser(query.username))
+    return { username: 'foo' }
   }
 
   render() {
+    const loading = 'Loading...'
+    const defaultImg = 'http://i0.kym-cdn.com/photos/images/original/001/250/216/305.jpg'
+    const placeholder = { name: loading, login: loading, avatarUrl: defaultImg }
+    const { name, login, avatarUrl } = this.props.user || placeholder
+
     return (
       <Container>
         <Header />
-        <SearchBar />
         <Content>
-          <Block>Back to Results for 'name'</Block>
+          { this.props.selectedQuery && this.props.selectedQuery != '' &&
+            <Block>
+              <Link href="/">
+                <a>Back to Results for { this.props.selectedQuery }</a>
+              </Link>
+            </Block>
+          }
+
           <Block>
-            <Image src="http://i0.kym-cdn.com/photos/images/original/001/250/216/305.jpg"/>
-            <Title>USERNAME</Title>
+            <Image src={ avatarUrl }/>
+            <Title>{ name }</Title>
+            <div>{ '@' + login }</div>
           </Block>
           <Block>
             <Title>Repositories</Title>
@@ -79,3 +104,20 @@ export default class Profile extends React.Component {
     )
   }
 }
+
+const mapStateToProps = (state) => {
+  return {
+    user: state.users[state.selectedUser],
+    selectedQuery: state.selectedQuery
+  }
+}
+
+const mapDispatchToProps = (dispatch) => {
+  return {
+
+  }
+}
+
+Profile = withRedux(makeStore, mapStateToProps, mapDispatchToProps)(Profile)
+
+export default Profile
