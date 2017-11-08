@@ -22,9 +22,12 @@ export class Pagination extends React.Component {
     const max = current * maxResultsPerPage
     const start = min > 0 ? min : 0
     const end = max > total ? total : max
+    
     return (
       <Container>
-        <Button>Prev</Button> { start } - { end } of { total } results<Button>Next</Button>
+        { start !== 1 && <Button>Prev</Button> }
+        { start } - { end } of { total } results
+        { end !== total && <Button>Next</Button> }
       </Container>
     )
   }
