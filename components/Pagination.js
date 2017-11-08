@@ -17,17 +17,18 @@ const Button = styled.button`
 
 export class Pagination extends React.Component {
   render() {
+    const query = this.props.selectedQuery
     const { total, current, maxResultsPerPage } = this.props.resultRange
     const min = (current - 1) * maxResultsPerPage + 1
     const max = current * maxResultsPerPage
     const start = min > 0 ? min : 0
     const end = max > total ? total : max
-    
+
     return (
       <Container>
-        { start !== 1 && <Button>Prev</Button> }
-        { start } - { end } of { total } results
-        { end !== total && <Button>Next</Button> }
+        { start !== 1 && <Button onClick={ () => this.props.onPrevPageRequest(query, current) }>Prev</Button> }
+        Showing { start } - { end } of { total } results for { query }
+        { end !== total && <Button onClick={ () => this.props.onNextPageRequest(query, current) }>Next</Button> }
       </Container>
     )
   }

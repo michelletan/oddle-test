@@ -7,6 +7,8 @@ const Card = styled.div`
   flex-direction: row;
   justify-content: stretch;
   padding: 10px;
+  margin-bottom: 10px;
+  border: 2px solid palevioletred;
 `
 
 const Image = styled.img`
@@ -16,6 +18,7 @@ const Image = styled.img`
 
 const Content = styled.div`
   margin-left: 10px;
+
 `
 
 const Text = styled.div`
@@ -36,7 +39,6 @@ export class ResultCard extends React.Component {
           <Image src={ avatarUrl } />
           <Content>
             <Title>{ login }</Title>
-            <Text>Following { subscriptions } Followers { followers }</Text>
           </Content>
         </Card>
       </Link>

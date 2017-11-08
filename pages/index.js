@@ -48,7 +48,9 @@ export class App extends React.Component {
         <Header />
         <SearchBar onSearchRequest={this.props.onSearchRequest}/>
         <Pagination
+          selectedQuery={this.props.selectedQuery}
           onNextPageRequest={this.props.onNextPageRequest}
+          onPrevPageRequest={this.props.onPrevPageRequest}
           resultRange={this.props.resultRange}
         />
         <ResultList users={this.props.users}/>
@@ -69,20 +71,24 @@ const mapStateToProps = (state) => {
     resultRange.current = state.selectedPage
     resultRange.maxResultsPerPage = maxResultsPerPage
   }
-  
+
   return {
     users: users,
-    resultRange: resultRange
+    resultRange: resultRange,
+    selectedQuery: state.selectedQuery
   }
 }
 
 const mapDispatchToProps = (dispatch) => {
   return {
-    onSearchRequest: query => {
+    onSearchRequest: (query) => {
       dispatch(fetchSearchResults(query))
     },
-    onNextPageRequest: page => {
+    onNextPageRequest: (query, page) => {
       dispatch(fetchSearchResults(query, page + 1))
+    },
+    onPrevPageRequest: (query, page) => {
+      dispatch(fetchSearchResults(query, page - 1))
     }
   }
 }

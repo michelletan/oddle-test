@@ -134,7 +134,7 @@ export function receiveUserSubscriptions(url, json) {
 export function fetchSearchResults(query, page=1) {
   return (dispatch) => {
     dispatch(requestSearchResults(query, page))
-    return fetch(`https://api.github.com/search/users?q=${query}&page=${page}`)
+    return fetch(`https://api.github.com/search/users?q=${query}+type:user+in:login&page=${page}`)
       .then(response => response.json())
       .then(json => dispatch(receiveSearchResults(query, page, json)))
   }
