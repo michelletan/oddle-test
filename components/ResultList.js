@@ -20,13 +20,13 @@ export class ResultList extends React.Component {
     console.log(this.props.users)
     const cards = this.props.users.map((user) => {
       return (
-        <ResultCard />
+        <ResultCard key={user.id} user={user}/>
       )
     })
 
     return (
       <Container>
-        {this.props.users.length > 0 && <Loading />}
+        {this.props.users.length === 0 && <Loading />}
         {cards}
       </Container>
     )
