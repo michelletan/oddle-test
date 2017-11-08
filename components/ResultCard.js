@@ -1,5 +1,6 @@
 import React, { Component } from 'react'
 import styled from 'styled-components'
+import Link from 'next/link'
 
 const Card = styled.div`
   display: flex;
@@ -28,14 +29,17 @@ const Title = styled.div`
 
 export class ResultCard extends React.Component {
   render() {
+    const { login, id, avatarUrl, subscriptions=0, followers=0 } = this.props.user
     return (
-      <Card>
-        <Image src="http://i0.kym-cdn.com/photos/images/original/001/250/216/305.jpg"/>
-        <Content>
-          <Title>Card Title</Title>
-          <Text>Following Followers</Text>
-        </Content>
-      </Card>
+      <Link href={{ pathname: '/profile', query: { id: id } }}>
+        <Card>
+          <Image src={ avatarUrl } />
+          <Content>
+            <Title>{ login }</Title>
+            <Text>Following { subscriptions } Followers { followers }</Text>
+          </Content>
+        </Card>
+      </Link>
     )
   }
 }
