@@ -17,12 +17,17 @@ const Input = styled.input`
 
 export class ResultList extends React.Component {
   render() {
+    console.log(this.props.users)
+    const cards = this.props.users.map((user) => {
+      return (
+        <ResultCard />
+      )
+    })
+
     return (
       <Container>
-        <Loading />
-        <ResultCard />
-        <ResultCard />
-        <ResultCard />
+        {this.props.users.length > 0 && <Loading />}
+        {cards}
       </Container>
     )
   }
