@@ -88,12 +88,11 @@ export function requestUserSubscriptions(userId) {
   }
 }
 
-
 export function receiveSearchResults(query, json) {
   return {
     type: RECEIVE_SEARCH_RESULTS,
     query: query,
-    results: json.data.children.map(child => child.data),
+    results: json,
     receivedAt: Date.now()
   }
 }
