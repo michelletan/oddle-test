@@ -60,15 +60,16 @@ export class App extends React.Component {
 const mapStateToProps = (state) => {
   let users = []
   let resultRange = { total: 0, current: 0, maxResultsPerPage: maxResultsPerPage }
-  console.log(state)
 
-  if (state.usersByQueries[state.selectedQuery]) {
-    const results = state.usersByQueries[state.selectedQuery]
-    users = results.items
+  const results = state.usersByQueries[state.selectedQuery]
+
+  if (results && results[state.selectedPage]) {
+    users = results[state.selectedPage]
     resultRange.total = results.totalCount
     resultRange.current = state.selectedPage
     resultRange.maxResultsPerPage = maxResultsPerPage
   }
+  
   return {
     users: users,
     resultRange: resultRange

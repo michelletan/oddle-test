@@ -31,9 +31,10 @@ export const RECEIVE_USER_SUBSCRIPTIONS = 'RECEIVE_USER_SUBSCRIPTIONS'
 //   queries: {
 //     'abc': {
 //       isFetching: true,
+//       totalCount: 1000,
 //       pages: {
-//         1: [username, username, username],
-//         2: [username, username, username],
+//         1: [user, user, user],
+//         2: [user, user, user],
 //       }
 //     }
 //   }

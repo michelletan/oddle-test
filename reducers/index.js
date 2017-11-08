@@ -66,14 +66,12 @@ function users(state = {}, action) {
 function usersByQueries(state = {}, action) {
   switch (action.type) {
     case RECEIVE_SEARCH_RESULTS:
-    console.log(action)
-      // const results = action.results.items
-      // const userIds = results.map((user) => {
-      //
-      // })
+      const newQuery = {...state[action.query], totalCount: action.results.totalCount}
+      newQuery[action.page] = action.results.items
+
       return {
         ...state,
-        [action.query]: action.results
+        [action.query]: newQuery
       }
     default:
       return state
