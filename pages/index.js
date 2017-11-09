@@ -1,7 +1,6 @@
 import React from 'react'
 import Router from 'next/router'
 import styled from 'styled-components'
-import { injectGlobal } from 'styled-components'
 
 import thunkMiddleware from 'redux-thunk'
 import { createStore, applyMiddleware, compose } from 'redux'
@@ -16,13 +15,6 @@ import Pagination from '../components/Pagination'
 import ResultList from '../components/ResultList'
 
 const maxResultsPerPage = 30
-
-injectGlobal`
-  body {
-    margin: 0;
-    font-family: 'Roboto'
-  }
-`
 
 const Container = styled.div`
   width: 100%;
