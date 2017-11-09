@@ -1,6 +1,5 @@
 import fetch from 'isomorphic-fetch'
 import camelize from 'camelize'
-import { clientId, clientSecret } from '../token'
 
 export const REQUEST_SEARCH_RESULTS = 'REQUEST_SEARCH_RESULTS'
 export const REQUEST_USER = 'REQUEST_USER'
@@ -13,6 +12,11 @@ export const RECEIVE_USER = 'RECEIVE_USER'
 export const RECEIVE_USER_REPOSITORIES = 'RECEIVE_USER_REPOSITORIES'
 export const RECEIVE_USER_FOLLOWERS = 'RECEIVE_USER_FOLLOWERS'
 export const RECEIVE_USER_FOLLOWING = 'RECEIVE_USER_FOLLOWING'
+
+const prod = process.env.NODE_ENV === 'production'
+
+const clientId = prod ? process.env.GITHUB_CLIENT_ID : require('../token').clientId
+const clientSecret = prod ? process.env.GITHUB_CLIENT_SECRET : require('../token').clientSecret
 
 // {
 //   selectedQuery: '',
@@ -130,12 +134,7 @@ export function fetchUser(username) {
     dispatch(requestUser(username))
     return fetch(`https://api.github.com/users/${username}?client_id=${clientId}&client_secret=${clientSecret}`)
       .then(response => response.json())
-      .then(json => {
-        dispatch(receiveUser(username, json))
-        dispatch(fetchUserRepositories(username))
-        dispatch(fetchUserFollowers(username))
-        dispatch(fetchUserFollowing(username))
-      })
+      .then(json => {dispatch(receiveUser(username, json))})
   }
 }
 
