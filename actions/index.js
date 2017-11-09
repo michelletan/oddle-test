@@ -1,20 +1,18 @@
 import fetch from 'isomorphic-fetch'
 import camelize from 'camelize'
-
-export const SEARCH_USER = 'SEARCH_USER'
-export const GET_USER = 'GET_USER'
-export const GET_USER_FOLLOWERS = 'GET_USER_FOLLOWERS'
-export const GET_USER_SUBSCRIPTIONS = 'GET_USER_SUBSCRIPTIONS'
+import { clientId, clientSecret } from '../token'
 
 export const REQUEST_SEARCH_RESULTS = 'REQUEST_SEARCH_RESULTS'
 export const REQUEST_USER = 'REQUEST_USER'
+export const REQUEST_USER_REPOSITORIES = 'REQUEST_USER_REPOSITORIES'
 export const REQUEST_USER_FOLLOWERS = 'REQUEST_USER_FOLLOWERS'
-export const REQUEST_USER_SUBSCRIPTIONS = 'GET_USER_SUBSCRIPTIONS'
+export const REQUEST_USER_FOLLOWING = 'GET_USER_FOLLOWING'
 
 export const RECEIVE_SEARCH_RESULTS = 'RECEIVE_SEARCH_RESULTS'
 export const RECEIVE_USER = 'RECEIVE_USER'
+export const RECEIVE_USER_REPOSITORIES = 'RECEIVE_USER_REPOSITORIES'
 export const RECEIVE_USER_FOLLOWERS = 'RECEIVE_USER_FOLLOWERS'
-export const RECEIVE_USER_SUBSCRIPTIONS = 'RECEIVE_USER_SUBSCRIPTIONS'
+export const RECEIVE_USER_FOLLOWING = 'RECEIVE_USER_FOLLOWING'
 
 // {
 //   selectedQuery: '',
@@ -30,7 +28,6 @@ export const RECEIVE_USER_SUBSCRIPTIONS = 'RECEIVE_USER_SUBSCRIPTIONS'
 //   },
 //   queries: {
 //     'abc': {
-//       isFetching: true,
 //       totalCount: 1000,
 //       pages: {
 //         1: [user, user, user],
@@ -40,33 +37,6 @@ export const RECEIVE_USER_SUBSCRIPTIONS = 'RECEIVE_USER_SUBSCRIPTIONS'
 //   }
 // }
 
-export function searchUser(query) {
-  return {
-    type: SEARCH_USER,
-    query: query
-  }
-}
-
-export function getUser(userId) {
-  return {
-    type: GET_USER,
-    userId: userId
-  }
-}
-
-export function getUserFollowers(url) {
-  return {
-    type: GET_USER_FOLLOWERS,
-    url: url
-  }
-}
-
-export function getUserSubscriptions(userId) {
-  return {
-    type: GET_USER_SUBSCRIPTIONS,
-    url: url
-  }
-}
 
 export function requestSearchResults(query, page) {
   return {
@@ -83,17 +53,24 @@ export function requestUser(username) {
   }
 }
 
-export function requestUserFollowers(url) {
+export function requestUserRepositories(username) {
   return {
-    type: REQUEST_USER_FOLLOWERS,
-    url: url
+    type: REQUEST_USER_REPOSITORIES,
+    username: username
   }
 }
 
-export function requestUserSubscriptions(userId) {
+export function requestUserFollowers(username) {
   return {
-    type: REQUEST_USER_SUBSCRIPTIONS,
-    url: url
+    type: REQUEST_USER_FOLLOWERS,
+    username: username
+  }
+}
+
+export function requestUserFollowing(username) {
+  return {
+    type: REQUEST_USER_FOLLOWING,
+    username: username
   }
 }
 
@@ -115,26 +92,34 @@ export function receiveUser(username, json) {
   }
 }
 
-export function receiveUserFollowers(url, json) {
+export function receiveUserRepositories(username, json) {
+  return {
+    type: RECEIVE_USER_REPOSITORIES,
+    username: username,
+    repositories: camelize(json)
+  }
+}
+
+export function receiveUserFollowers(username, json) {
   return {
     type: RECEIVE_USER_FOLLOWERS,
-    url: url,
+    username: username,
     followers: camelize(json)
   }
 }
 
-export function receiveUserSubscriptions(url, json) {
+export function receiveUserFollowing(username, json) {
   return {
-    type: RECEIVE_USER_SUBSCRIPTIONS,
-    url: url,
-    subscriptions: camelize(json)
+    type: RECEIVE_USER_FOLLOWING,
+    username: username,
+    following: camelize(json)
   }
 }
 
 export function fetchSearchResults(query, page=1) {
   return (dispatch) => {
     dispatch(requestSearchResults(query, page))
-    return fetch(`https://api.github.com/search/users?q=${query}+type:user+in:login&page=${page}`)
+    return fetch(`https://api.github.com/search/users?client_id=${clientId}&client_secret=${clientSecret}&q=${query}+type:user+in:login&page=${page}`)
       .then(response => response.json())
       .then(json => dispatch(receiveSearchResults(query, page, json)))
   }
@@ -143,8 +128,40 @@ export function fetchSearchResults(query, page=1) {
 export function fetchUser(username) {
   return (dispatch) => {
     dispatch(requestUser(username))
-    return fetch(`https://api.github.com/users/${username}`)
+    return fetch(`https://api.github.com/users/${username}?client_id=${clientId}&client_secret=${clientSecret}`)
       .then(response => response.json())
-      .then(json => dispatch(receiveUser(username, json)))
+      .then(json => {
+        dispatch(receiveUser(username, json))
+        dispatch(fetchUserRepositories(username))
+        dispatch(fetchUserFollowers(username))
+        dispatch(fetchUserFollowing(username))
+      })
+  }
+}
+
+export function fetchUserRepositories(username) {
+  return (dispatch) => {
+    dispatch(requestUserRepositories(username))
+    return fetch(`https://api.github.com/users/${username}/repos?client_id=${clientId}&client_secret=${clientSecret}`)
+      .then(response => response.json())
+      .then(json => dispatch(receiveUserRepositories(username, json)))
+  }
+}
+
+export function fetchUserFollowers(username) {
+  return (dispatch) => {
+    dispatch(requestUserFollowers(username))
+    return fetch(`https://api.github.com/users/${username}/followers?client_id=${clientId}&client_secret=${clientSecret}`)
+      .then(response => response.json())
+      .then(json => dispatch(receiveUserFollowers(username, json)))
+  }
+}
+
+export function fetchUserFollowing(username) {
+  return (dispatch) => {
+    dispatch(requestUserFollowing(username))
+    return fetch(`https://api.github.com/users/${username}/following?client_id=${clientId}&client_secret=${clientSecret}`)
+      .then(response => response.json())
+      .then(json => dispatch(receiveUserFollowing(username, json)))
   }
 }
