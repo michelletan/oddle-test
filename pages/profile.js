@@ -2,24 +2,21 @@ import React from 'react'
 import Router from 'next/router'
 import Link from 'next/link'
 import styled from 'styled-components'
-import { injectGlobal } from 'styled-components'
 
 import thunkMiddleware from 'redux-thunk'
 import { createStore, applyMiddleware, compose } from 'redux'
 import withRedux from 'next-redux-wrapper'
 import rootReducer from '../reducers'
 
-import { fetchUser } from '../actions'
+import {
+  fetchUser,
+  fetchUserRepositories,
+  fetchUserFollowing,
+  fetchUserFollowers
+} from '../actions'
 
 import Header from '../components/Header'
 import SearchBar from '../components/SearchBar'
-
-injectGlobal`
-  body {
-    margin: 0;
-    font-family: 'Roboto'
-  }
-`
 
 const Container = styled.div`
   width: 100%;
@@ -32,13 +29,9 @@ const Container = styled.div`
 
 const Content = styled.div`
   display: flex;
-  flex-direction: row;
+  flex-direction: column;
   margin-top: 20px;
   padding-left: 20px;
-`
-
-const ProfileBlock = styled.div`
-  width: 300px;
 `
 
 const Block = styled.div`
@@ -62,6 +55,7 @@ const ListItem = styled.div`
   padding: 10px;
   margin-top: -2px;
   border: 2px solid palevioletred;
+  word-wrap: break-word;
 `
 
 const Image = styled.img`
@@ -76,8 +70,12 @@ const makeStore = (initialState, options) => {
 
 export class Profile extends React.Component {
   static async getInitialProps({ store, isServer, pathname, query }) {
-    store.dispatch(fetchUser(query.username))
-    return { }
+    await store.dispatch(fetchUser(query.username))
+    return { username: query.username }
+  }
+
+  componentDidMount() {
+    this.props.onUserLoaded(this.props.username)
   }
 
   render() {
@@ -99,7 +97,7 @@ export class Profile extends React.Component {
     const user = {...placeholder, ...this.props.user}
 
     const repos = user.repositories.map((repo) => {
-      return (<ListItem>{ repo.name }</ListItem>)
+      return (<ListItem key={ repo.id }>{ repo.name }</ListItem>)
     })
 
     const following = user.followingList.map((user) => {
@@ -121,7 +119,7 @@ export class Profile extends React.Component {
           </Block>
         }
         <Content>
-          <ProfileBlock>
+          <Block>
             <Image src={ user.avatarUrl }/>
             <Title>{ user.name }</Title>
             <p>{ '@' + user.login }</p>
@@ -129,7 +127,7 @@ export class Profile extends React.Component {
             <Link href={ user.htmlUrl }>
               <a>{ user.htmlUrl }</a>
             </Link>
-          </ProfileBlock>
+          </Block>
           <Block>
             <Title>Repositories ({ user.publicRepos })</Title>
             <List>
@@ -166,6 +164,16 @@ const mapStateToProps = (state) => {
   }
 }
 
-Profile = withRedux(makeStore, mapStateToProps)(Profile)
+const mapDispatchToProps = (dispatch) => {
+  return {
+    onUserLoaded: (username) => {
+      dispatch(fetchUserRepositories(username))
+      dispatch(fetchUserFollowing(username))
+      dispatch(fetchUserFollowers(username))
+    }
+  }
+}
+
+Profile = withRedux(makeStore, mapStateToProps, mapDispatchToProps)(Profile)
 
 export default Profile
