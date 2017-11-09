@@ -42,7 +42,6 @@ const ProfileBlock = styled.div`
 `
 
 const Block = styled.div`
-  flex: 1;
   display: flex;
   flex-direction: column;
   margin-bottom: 10px;
@@ -52,9 +51,22 @@ const Title = styled.h2`
   margin-bottom: 10px;
 `
 
+const List = styled.div`
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  justify-content: center;
+`
+
+const ListItem = styled.div`
+  padding: 10px;
+  margin-top: -2px;
+  border: 2px solid palevioletred;
+`
+
 const Image = styled.img`
-  width: 100px;
-  height: 100px;
+  width: 50px;
+  height: 50px;
   margin-right: 10px;
 `
 
@@ -69,7 +81,6 @@ export class Profile extends React.Component {
   }
 
   render() {
-    console.log(this.props.user)
     const loading = 'Loading...'
     const defaultImg = 'http://i0.kym-cdn.com/photos/images/original/001/250/216/305.jpg'
     const placeholder = {
@@ -80,9 +91,24 @@ export class Profile extends React.Component {
       htmlUrl: 'https://github.com',
       publicRepos: 0,
       following: 0,
-      followers: 0
+      followers: 0,
+      repositories: [],
+      followingList: [],
+      followerList: []
     }
-    const user = this.props.user || placeholder
+    const user = {...placeholder, ...this.props.user}
+
+    const repos = user.repositories.map((repo) => {
+      return (<ListItem>{ repo.name }</ListItem>)
+    })
+
+    const following = user.followingList.map((user) => {
+      return (<ListItem key={ user.id }><Image src={ user.avatarUrl }/>{ user.login }</ListItem>)
+    })
+
+    const followers = user.followerList.map((user) => {
+      return (<ListItem key={ user.id }><Image src={ user.avatarUrl }/>{ user.login }</ListItem>)
+    })
 
     return (
       <Container>
@@ -106,8 +132,25 @@ export class Profile extends React.Component {
           </ProfileBlock>
           <Block>
             <Title>Repositories ({ user.publicRepos })</Title>
+            <List>
+              { repos }
+            </List>
+
             <Title>Following ({ user.following })</Title>
+            <List>
+              { following }
+            </List>
+
             <Title>Followers ({ user.followers })</Title>
+            <List>
+              { followers }
+            </List>
+
+            <Title>JSON Payload</Title>
+            <List>
+              <ListItem>{ JSON.stringify(user, null, '\t') }</ListItem>
+            </List>
+
           </Block>
         </Content>
 
@@ -123,12 +166,6 @@ const mapStateToProps = (state) => {
   }
 }
 
-const mapDispatchToProps = (dispatch) => {
-  return {
-
-  }
-}
-
-Profile = withRedux(makeStore, mapStateToProps, mapDispatchToProps)(Profile)
+Profile = withRedux(makeStore, mapStateToProps)(Profile)
 
 export default Profile

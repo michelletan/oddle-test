@@ -2,11 +2,12 @@ import {
   REQUEST_SEARCH_RESULTS,
   REQUEST_USER,
   REQUEST_USER_FOLLOWERS,
-  REQUEST_USER_SUBSCRIPTIONS,
+  REQUEST_USER_FOLLOWING,
   RECEIVE_SEARCH_RESULTS,
   RECEIVE_USER,
+  RECEIVE_USER_REPOSITORIES,
   RECEIVE_USER_FOLLOWERS,
-  RECEIVE_USER_SUBSCRIPTIONS,
+  RECEIVE_USER_FOLLOWING,
 } from '../actions'
 import { combineReducers } from 'redux'
 
@@ -41,22 +42,24 @@ function selectedUser(state = '', action) {
 function users(state = {}, action) {
   switch (action.type) {
     case RECEIVE_USER:
-      const newUser = {...state[action.username], ...action.user}
       return {
         ...state,
-        [action.username]: newUser
+        [action.username]: {...state[action.username], ...action.user}
+      }
+    case RECEIVE_USER_REPOSITORIES:
+      return {
+        ...state,
+        [action.username]: {...state[action.username], repositories: action.repositories}
       }
     case RECEIVE_USER_FOLLOWERS:
-      const newUserF = {...state[action.userId], followers: action.followers}
       return {
         ...state,
-        [action.userId]: newUserF
+        [action.username]: {...state[action.username], followerList: action.followers}
       }
-    case RECEIVE_USER_SUBSCRIPTIONS:
-      const newUserS = {...state[action.userId], subscriptions: action.subscriptions}
+    case RECEIVE_USER_FOLLOWING:
       return {
         ...state,
-        [action.userId]: newUserS
+        [action.username]:{...state[action.username], followingList: action.following}
       }
     default:
       return state
