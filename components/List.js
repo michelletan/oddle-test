@@ -21,12 +21,16 @@ const Image = styled.img`
 `
 
 export const List = ({ listItems }) => {
-  const items = listItems.map((item, index) => (
-    <ListItem key={ index }>
-      { item.avatarUrl && <Image src={ item.avatarUrl }/>}
-      { item.name ? item.name : item.login }
-    </ListItem>
-  ))
+  let items = (<p>No items to show</p>)
+
+  if (listItems) {
+    items = listItems.map((item, index) => (
+      <ListItem key={ index }>
+        { item.avatarUrl && <Image src={ item.avatarUrl }/>}
+        { item.name ? item.name : item.login }
+      </ListItem>
+    ))
+  }
 
   return (
     <StyledList>{ items }</StyledList>

@@ -134,7 +134,7 @@ export function fetchUser(username) {
     dispatch(requestUser(username))
     return fetch(`https://api.github.com/users/${username}?client_id=${clientId}&client_secret=${clientSecret}`)
       .then(response => response.json())
-      .then(json => {dispatch(receiveUser(username, json))})
+      .then(json => dispatch(receiveUser(username, json)))
   }
 }
 
