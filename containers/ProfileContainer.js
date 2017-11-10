@@ -11,7 +11,6 @@ import {
 } from '../actions'
 
 const mapStateToProps = (state) => {
-  console.log(state)
   return {
     user: state.users[state.selectedUser],
     selectedQuery: state.selectedQuery

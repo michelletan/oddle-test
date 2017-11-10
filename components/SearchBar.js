@@ -18,11 +18,15 @@ const Button = styled.button`
   padding: 9px;
 `
 
+const minLengthForQuery = 2
+const maxTimeBetweenTyping = 300 //ms
+
 export class SearchBar extends React.Component {
   constructor(props) {
     super(props)
     this.state = {
-      text: ''
+      text: '',
+      lastTypingEvent: Date.now()
     }
     this.onKeyPress = this.onKeyPress.bind(this)
     this.onTextChange = this.onTextChange.bind(this)
@@ -37,6 +41,13 @@ export class SearchBar extends React.Component {
 
   onTextChange(event) {
     this.setState({ text: event.target.value })
+
+    if (this.state.text.length >= minLengthForQuery &&
+       (Date.now() - this.state.lastTypingEvent) > maxTimeBetweenTyping) {
+      this.props.onSearchRequest(this.state.text)
+    }
+
+    this.setState({ lastTypingEvent: Date.now() })
   }
 
   onButtonClick() {
