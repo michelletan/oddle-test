@@ -7,7 +7,11 @@ import { createStore, applyMiddleware, compose } from 'redux'
 import withRedux from 'next-redux-wrapper'
 import rootReducer from '../reducers'
 
-import { fetchSearchResults } from '../actions'
+import {
+  fetchSearchResults,
+  fetchUserFollowing,
+  fetchUserFollowers
+} from '../actions'
 
 import Header from '../components/Header'
 import SearchBar from '../components/SearchBar'
@@ -45,7 +49,7 @@ export class App extends React.Component {
           onPrevPageRequest={this.props.onPrevPageRequest}
           resultRange={this.props.resultRange}
         />
-        <ResultList users={this.props.users}/>
+        <ResultList users={this.props.users} loadUserData={this.props.loadUserData}/>
       </Container>
     )
   }
@@ -59,6 +63,9 @@ const mapStateToProps = (state) => {
 
   if (results && results[state.selectedPage]) {
     users = results[state.selectedPage]
+    users = users.map((user) => {
+      return {...state.users[user.login], ...user}
+    })
     resultRange.total = results.totalCount
     resultRange.current = state.selectedPage
     resultRange.maxResultsPerPage = maxResultsPerPage
@@ -81,6 +88,10 @@ const mapDispatchToProps = (dispatch) => {
     },
     onPrevPageRequest: (query, page) => {
       dispatch(fetchSearchResults(query, page - 1))
+    },
+    loadUserData: (user) => {
+      dispatch(fetchUserFollowing(user.login))
+      dispatch(fetchUserFollowers(user.login))
     }
   }
 }

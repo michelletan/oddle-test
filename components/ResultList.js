@@ -19,7 +19,7 @@ export class ResultList extends React.Component {
   render() {
     const cards = this.props.users.map((user) => {
       return (
-        <ResultCard key={user.id} user={user}/>
+        <ResultCard key={user.id} user={user} loadUserData={this.props.loadUserData} />
       )
     })
 
